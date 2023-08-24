@@ -1,0 +1,21 @@
+spring:
+  datasource:
+    url: jdbc:mysql://localhost:3306/ToyProject_SNS?autoReconnect=true&useUnicode=true&characterEncoding=utf8&allowPublicKeyRetrieval=true&useSSL=false&serverTimezone=UTC
+    dbcp:
+      test-on-borrow: true
+      validation-query: select 1
+    username: root
+    password: Minju0405!
+  jpa:
+    show-sql: true
+    hibernate:
+      ddl-auto: create
+  session:
+    store-type: jdbc
+    jdbc:
+      initialize-schema: always
+    table-name: toyproject_sns
+
+logging:
+  level:
+    org.springframework: DEBUG
