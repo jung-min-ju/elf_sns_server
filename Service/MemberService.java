@@ -14,6 +14,7 @@ import java.util.Optional;
 @Service
 @Transactional
 public class MemberService {
+
     private final MemberRepository memberRepository;
 
     // Spring Session에서 제공하는 인터페이스 중 하나로, 세션을 검색하기 위한 인덱스 기반의 메서드를 포함
@@ -58,15 +59,11 @@ public class MemberService {
 
     public String getUserIdBySessionId(String sessionId) {
 
-        System.out.println("Session ID: " + sessionId);
-
         Session session = sessionRepository.findById(sessionId);
-        System.out.println("Session: " + session);
 
         if (session != null) {
             MemberSessionInfo storedMemberInfo = (MemberSessionInfo) session.getAttribute("LoggedMember");
             String userId = storedMemberInfo.getId();
-            System.out.println("User ID from Session: " + userId);
 
             if (userId != null) {
                 return userId;

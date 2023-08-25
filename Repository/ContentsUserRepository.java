@@ -1,6 +1,7 @@
 package ToyProject.SNS.Repository;
 
 import ToyProject.SNS.Entity.ContentsUser;
+import org.springframework.stereotype.Repository;
 
 import java.util.List;
 

@@ -2,6 +2,7 @@ package ToyProject.SNS.Service;
 
 import ToyProject.SNS.Entity.ContentsUser;
 import ToyProject.SNS.Repository.ContentsUserRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -12,11 +13,13 @@ import java.util.UUID;
 @Service
 public class UserService {
 
-    private ContentsUserRepository UserRepository;
+    @Autowired
+    private ContentsUserRepository contentsUserRepository;
 
-    public UserService(ContentsUserRepository userRepository) {
-        UserRepository = userRepository;
+    public UserService(ContentsUserRepository contentsUserRepository) {
+        this.contentsUserRepository = contentsUserRepository;
     }
+
 
     public void createUser(int seed){
 
@@ -26,14 +29,14 @@ public class UserService {
             ContentsUser user = new ContentsUser();
             user.setUserID(uuid);
 
-            UserRepository.save(user);
+            contentsUserRepository.save(user);
         }
     }
 
     public List<ContentsUser> getUser(){
         Random random = new Random();
         long user_index = random.nextInt(1000)+1;
-        return UserRepository.findById(user_index);
+        return contentsUserRepository.findById(user_index);
     }
 
 }
