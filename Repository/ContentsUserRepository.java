@@ -4,8 +4,10 @@ import ToyProject.SNS.Entity.ContentsUser;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface ContentsUserRepository {
     ContentsUser save(ContentsUser contentsUser);
-    List<ContentsUser> findById(long id);
+    Optional<ContentsUser> findById(long id);
+    List<ContentsUser> findAll();
 }

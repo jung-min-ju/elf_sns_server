@@ -2,10 +2,8 @@ package ToyProject.SNS.Entity;
 
 import lombok.Getter;
 import lombok.Setter;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+
+import javax.persistence.*;
 
 @Entity
 @Getter
@@ -16,10 +14,11 @@ public class Contents {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    public String Contentsid;
-    public String author;
-    public String cteateAt;
-    //public String imgUrl;
+    public String ContentsId;
+    public String authorId;
+    public Long cteateAt;
+    public String imgUrl;
+    @Column(columnDefinition = "TEXT") // 이 부분을 추가하여 데이터 타입을 변경
     public String content;
 
 }

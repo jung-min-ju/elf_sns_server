@@ -5,4 +5,5 @@ import ToyProject.SNS.Entity.Member;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface ContentsUserBootRepository extends JpaRepository<ContentsUser, Long>, ContentsUserRepository{
+
 }

@@ -38,7 +38,7 @@ public class LoginController {
 
                 Member loggedInMember = memberOptional.get(); 
                 
-                MemberSessionInfo memberSessionInfo = new MemberSessionInfo(); 
+                MemberSessionInfo memberSessionInfo = new MemberSessionInfo();
                 memberSessionInfo.setId(loggedInMember.getId().toString());
                 memberSessionInfo.setEmail(loggedInMember.getEmail());
                 memberSessionInfo.setPassword(loggedInMember.getPassword());
