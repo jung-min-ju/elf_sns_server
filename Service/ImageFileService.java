@@ -44,19 +44,5 @@ public class ImageFileService {
         }
     }
 
-    public List<ImageFile> returnImages(){
-        List<ImageFile> allContents = imageFileRepository.findAll();
-
-        List<ImageFile> OneImages = new ArrayList<>();
-
-        Random random = new Random();
-        int response_random_dex = random.nextInt(5)+1;
-
-        for(int i=0; i<response_random_dex; i++){
-            int ImageIndex = random.nextInt(allContents.size());
-            OneImages.add(allContents.get(ImageIndex));
-        }
-        return OneImages;
-    }
 
 }

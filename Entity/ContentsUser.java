@@ -19,5 +19,6 @@ public class ContentsUser {
     private Long id;
     private String userID; //uuid 알아보고 적용해보기
     private String imgUrl;
+    private String name;
 
 }

@@ -10,5 +10,5 @@ import java.util.Optional;
 public interface ContentsBootRepository extends JpaRepository<Contents, Long>, ContentsRepository{
     List<Contents> findAllByOrderByCreateAtAsc();
     Optional<Contents> findByCreateAtID(Long createAtID);
-
+    Optional<Contents> findByContentsId(String ContentsId);
 }

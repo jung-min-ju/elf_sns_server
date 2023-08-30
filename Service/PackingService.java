@@ -6,6 +6,7 @@ import ToyProject.SNS.Entity.ImageFile;
 import ToyProject.SNS.Repository.CommentsRepository;
 import ToyProject.SNS.Repository.ContentsBootRepository;
 import ToyProject.SNS.Repository.ContentsRepository;
+import ToyProject.SNS.Repository.ImageFileBootRepository;
 import org.springframework.stereotype.Service;
 
 import javax.crypto.spec.OAEPParameterSpec;
@@ -14,17 +15,18 @@ import java.util.*;
 @Service
 public class PackingService {
     private ImageFileService imageFileService;
+    private ImageFileBootRepository imageFileBootRepository;
     private CommentsRepository commentsRepository;
-    private ContentsRepository contentsRepository;
     private ContentsBootRepository contentsBootRepository;
 
-    public PackingService(ImageFileService imageFileService, CommentsRepository commentsRepository,
-                          ContentsBootRepository contentBootRepository, ContentsRepository contentsRepository) {
+    public PackingService(ImageFileService imageFileService, ImageFileBootRepository imageFileBootRepository,
+                          CommentsRepository commentsRepository, ContentsBootRepository contentsBootRepository) {
         this.imageFileService = imageFileService;
+        this.imageFileBootRepository = imageFileBootRepository;
         this.commentsRepository = commentsRepository;
-        this.contentsBootRepository = contentBootRepository;
-        this.contentsRepository = contentsRepository;
+        this.contentsBootRepository = contentsBootRepository;
     }
+
 
     public Map<String, Object> ContentsPage (String Standard_ContentId, Long requiredPage, String Null) {
         Map<String, Object> response = new HashMap<>();
@@ -68,10 +70,14 @@ public class PackingService {
 
 
             //이미지 정보 저장하기
-            List<ImageFile> imageFile = imageFileService.returnImages(); //이미지 리스트 여러개 받기
             List<String> imageUrl = new ArrayList<>();
-            for(ImageFile imageFiles : imageFile){
-                imageUrl.add(imageFiles.getFilePath()); //author
+            Random random = new Random();
+            int imageCount = random.nextInt(5)+1;
+            for(int j=0; j<imageCount; j++){
+                Optional<ImageFile> randomImage= imageFileBootRepository.getRandomImageFile();
+                if (randomImage.isPresent()) {
+                    imageUrl.add(randomImage.get().getFilePath());
+                }
             }
 
             //댓글 정보 저장하기

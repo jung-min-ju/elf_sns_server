@@ -2,7 +2,9 @@ package ToyProject.SNS.Service;
 
 import ToyProject.SNS.Entity.ContentsUser;
 import ToyProject.SNS.Entity.Friend;
+import ToyProject.SNS.Entity.ImageFile;
 import ToyProject.SNS.Repository.*;
+import com.github.javafaker.Faker;
 import net.bytebuddy.agent.builder.AgentBuilder;
 import org.apache.catalina.User;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,19 +28,32 @@ public class UserService {
 
     private Long UserCount = 50L;
 
-
-    public void createUser(int seed){
+    public void createUser(){
         List<ContentsUser> users = new ArrayList<>();
 
         for(int i=0; i<UserCount; i++){ //user 1000명으로 잡기
             UUID uuid = UUID.randomUUID();
-
+            Faker faker = new Faker();
             ContentsUser user = new ContentsUser();
             user.setUserID(uuid.toString());
+            user.setName(faker.name().name());
 
             users.add(user);
         }
         contentsUserBootRepository.saveAll(users);
+    }
+
+    public void addUser(String userName){
+
+        UUID uuid = UUID.randomUUID();
+        Faker faker = new Faker();
+
+        ContentsUser user = new ContentsUser();
+        user.setUserID(uuid.toString());
+        user.setName(userName);
+
+        contentsUserRepository.save(user);
+        UserCount++;
     }
 
     public String getUserID(String standard) {  //댓글에서 userId 설정 시 사용해줄 랜덤 userId
@@ -47,7 +62,7 @@ public class UserService {
         long user_index = 0;
 
         if(standard.equals("random")) {
-            user_index = random.nextInt(1000) + 1;
+            user_index = random.nextLong(UserCount) + 1;
         }
         else {
             user_index = Long.parseLong(standard);
@@ -111,6 +126,12 @@ public class UserService {
             return "NotExits";
         }
         return "Exits";
+    }
+
+    public void uploadFriend(){
+        //친구 관계 확인하기
+        //각각의 uuid 가져오기
+        //추가하기
     }
 
 }

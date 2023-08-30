@@ -1,19 +1,13 @@
 package ToyProject.SNS.Controller;
 
 import ToyProject.SNS.DTO.ContentsRequest;
-import ToyProject.SNS.DTO.UploadDTO;
-import ToyProject.SNS.Entity.Comments;
-import ToyProject.SNS.Entity.Contents;
-import ToyProject.SNS.Entity.ContentsUser;
-import ToyProject.SNS.Entity.ImageFile;
 import ToyProject.SNS.Service.*;
-import org.apache.catalina.User;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.*;
 
@@ -51,6 +45,7 @@ public class ContentsController {
             imageFileService.findByImagesFiles(); //이미지 경로 저장
             contentsService.createContents(seed, contentsRequest.getRequiredPage()); //컨텐츠 만들기 - crateAT순으로 정렬해줌
             commentsService.createComments(); // 댓글 만들기
+            userService.createUser(); //유저 생성
             userService.createFriendship(); //친구 관계 설정
 
             contentsData = packingService.ContentsPage(String.valueOf(0L),contentsRequest.getRequiredPage(),"");
@@ -68,10 +63,12 @@ public class ContentsController {
         return ResponseEntity.status(HttpStatus.OK).body(contentsData);
     }
 
-    @PostMapping("/getFriendship")
-    ResponseEntity <Map<String, Object>> getFriendship(@RequestBody ContentsRequest contentsRequest) throws Exception{
-
+    @PostMapping("/getFriendship") //친구 검색했을때, 해당하는 모든 사람의 인원 보내주기
+    ResponseEntity <Map<String, Object>> getFriendship(@RequestParam("userId") String userId) {
+        Map<String, Object> response = null;
+        return  ResponseEntity.status(HttpStatus.OK).body(response);
     }
+
 
 }
 

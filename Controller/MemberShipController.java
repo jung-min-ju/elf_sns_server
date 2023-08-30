@@ -5,6 +5,7 @@ import ToyProject.SNS.Domain.MemberSessionInfo;
 import ToyProject.SNS.Entity.Member;
 import ToyProject.SNS.Repository.MemberRepository;
 import ToyProject.SNS.Service.MemberService;
+import ToyProject.SNS.Service.UserService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -19,10 +20,12 @@ import java.util.Map;
 public class MemberShipController {
     private MemberService memberService;
     private MemberRepository memberRepository;
+    private UserService userService;
 
-    public MemberShipController(MemberService memberService, MemberRepository memberRepository) {
+    public MemberShipController(MemberService memberService, MemberRepository memberRepository, UserService userService) {
         this.memberService = memberService;
         this.memberRepository = memberRepository;
+        this.userService = userService;
     }
 
     @PostMapping("/signUp")
@@ -36,6 +39,8 @@ public class MemberShipController {
             member.setPhoneNumber(memberShipDTO.getPassword());
 
             Long memberId = memberService.join(member);
+            //ContentUser에 회원가입한 멤버 추가하는 기능
+            userService.addUser(memberShipDTO.getName());
 
             Map<String, Object> response = new HashMap<>();
             response.put("state", "SUCCESS");

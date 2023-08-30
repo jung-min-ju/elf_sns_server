@@ -6,6 +6,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.Map;
 
@@ -33,16 +34,26 @@ public class EditContentsController {
         Map<String, Object> response = null;
 
         //받아온 데이터의 내용이 너무 길때, 막아주는 함수도 필요함-> 이건 디테일이니까 나중엥~
-        if(uploadDTO.getStandard().equals("comment")){ //댓글 업로드의 경우
-
+        if(uploadDTO.getStandard().equals("editComment")){ //댓글 수정 경우
+            commentsService.editComment(uploadDTO.getId(), uploadDTO.getContent());
+        }
+        else if(uploadDTO.getStandard().equals("comment")){
+            commentsService.addComment(uploadDTO.getId(), uploadDTO.getContent());
         }
         else if(uploadDTO.getStandard().equals("content")){
-
+            contentsService.uploadContent(uploadDTO.getId(), uploadDTO.getContent());
         }
         else{ //frined 친구 추가일 경우
 
         }
-
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
+
+    @PostMapping("/deleteComment")
+    ResponseEntity<Map<String,Object>> delete(@RequestParam("commentId") String commentId){
+        Map<String, Object> response = null;
+        commentsService.deleteComment(commentId);
+        return ResponseEntity.status(HttpStatus.OK).body(response);
+    }
+
 }

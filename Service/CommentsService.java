@@ -1,11 +1,12 @@
 package ToyProject.SNS.Service;
 
 import ToyProject.SNS.Entity.Comments;
-import ToyProject.SNS.Entity.Contents;
-import ToyProject.SNS.Entity.ContentsUser;
+import ToyProject.SNS.Entity.ImageFile;
+import ToyProject.SNS.Repository.CommentsBootRepository;
 import ToyProject.SNS.Repository.CommentsRepository;
+import ToyProject.SNS.Repository.ContentsBootRepository;
+import ToyProject.SNS.Repository.ImageFileBootRepository;
 import com.github.javafaker.Faker;
-import org.apache.catalina.User;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
@@ -18,10 +19,15 @@ public class CommentsService {
 
     private CommentsRepository commentsRepository;
     private UserService userService;
+    private ImageFileBootRepository imageFileBootRepository;
+    private CommentsBootRepository commentsBootRepository;
 
-    public CommentsService(CommentsRepository commentsRepository, UserService userService) {
+    public CommentsService(CommentsRepository commentsRepository, UserService userService,
+                           ImageFileBootRepository imageFileBootRepository, CommentsBootRepository commentsBootRepository) {
         this.commentsRepository = commentsRepository;
         this.userService = userService;
+        this.imageFileBootRepository = imageFileBootRepository;
+        this.commentsBootRepository = commentsBootRepository;
     }
 
 
@@ -44,14 +50,30 @@ public class CommentsService {
             comments.setCreateAt(Long.valueOf(Long.toString(faker.date().past(365, TimeUnit.DAYS).getTime())));
             comments.setComment(faker.lorem().sentence());
 
+            Optional<ImageFile> imageFile = imageFileBootRepository.getRandomImageFile();
+            comments.setImgUrl(imageFile.get().getFilePath());
+
             commentsList.add(comments);
-            commentsRepository.save(comments);
+        }
+        commentsBootRepository.saveAll(commentsList);
+    }
+
+    public void addComment(String commentId, String text){
+        Optional<Comments> comment = commentsBootRepository.findBycommentId(commentId);
+    }
+
+    public void editComment(String commentId, String text){
+        Optional<Comments> comment = commentsBootRepository.findBycommentId(commentId);
+        if(comment.isPresent()){
+            Comments uploadcomment = comment.get();
+            uploadcomment.setComment(text);
+            commentsRepository.save(uploadcomment);
         }
     }
 
-    public void uploadComment(String userId, String comment){
-
+    public void deleteComment(String commentId){
+        Optional<Comments> comment = commentsBootRepository.findBycommentId(commentId);
+        comment.ifPresent(commentsBootRepository::delete);
     }
-
 
 }
