@@ -2,6 +2,7 @@ package ToyProject.SNS.Service;
 
 import ToyProject.SNS.Entity.Contents;
 import ToyProject.SNS.Entity.ImageFile;
+import ToyProject.SNS.Repository.ContentsBootRepository;
 import ToyProject.SNS.Repository.ContentsRepository;
 import ToyProject.SNS.Repository.ImageFileRepository;
 import com.github.javafaker.Faker;
@@ -15,12 +16,15 @@ public class ContentsService {
     private UserService userService;
 
     private ContentsRepository contentsRepository;
+    private ContentsBootRepository contentsBootRepository;
     private ImageFileRepository imageFileRepository;
 
-    public ContentsService(UserService userService, ContentsRepository contentsRepository, ImageFileRepository imageFileRepository) {
+    public ContentsService(UserService userService, ContentsRepository contentsRepository, ImageFileRepository imageFileRepository,
+                           ContentsBootRepository contentsBootRepository) {
         this.userService = userService;
         this.contentsRepository = contentsRepository;
         this.imageFileRepository = imageFileRepository;
+        this.contentsBootRepository = contentsBootRepository;
     }
 
     public void createContents(int seed, Long requiredPage){ //콘텐츠 생성
@@ -49,27 +53,29 @@ public class ContentsService {
             //faker로 contents 필드의 내용 생성
             Contents contents = new Contents();
             contents.setContentsId(UUID.randomUUID().toString()); // 컨텐츠id의 uuid 생성
-            contents.setAuthorId(userService.getUserID()); //사실 이렇게 user의 uuid 값만 넘겨주는게 맞는지는 모르겟음
-            contents.setCteateAt(Long.valueOf(Long.toString(faker.date().past(365, TimeUnit.DAYS).getTime())));
+            contents.setAuthorId(userService.getUserID("random")); //사실 이렇게 user의 uuid 값만 넘겨주는게 맞는지는 모르겟음
+            contents.setCreateAt(Long.valueOf(Long.toString(faker.date().past(365, TimeUnit.DAYS).getTime())));
             contents.setImgUrl(randomImageFile.getFilePath());
             contents.setContent(faker.lorem().paragraph());
 
-            //create_Contents 리스트에 내용 추가
             create_Contents.add(contents);
-            contentsRepository.save(contents);
         }
-    }
 
-    public List<Contents> returnOneContent(){
-        List<Contents> allContents = contentsRepository.findAll();
+        // 모든 내용을 저장
+        contentsBootRepository.saveAll(create_Contents);
 
-        List<Contents> OneContents = new ArrayList<>();
+        // Sort the contents by createAt
+        List<Contents> sortedContents = contentsBootRepository.findAllByOrderByCreateAtAsc();
 
-        Random random = new Random();
-        int ContentIndex = random.nextInt(allContents.size());
+        // Set createAtID for each content
+        Long nextId = 1L;
+        for (Contents content : sortedContents) {
+            content.setCreateAtID(nextId);
+            nextId++;
+        }
 
-        OneContents.add(allContents.get(ContentIndex));
-        return OneContents;
+        // Update contents with createAtID
+        contentsBootRepository.saveAll(sortedContents);
     }
 
 }

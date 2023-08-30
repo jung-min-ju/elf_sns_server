@@ -8,5 +8,4 @@ import java.util.Optional;
 public interface ImageFileRepository {
     ImageFile save(ImageFile imageFile);
     List<ImageFile> findAll();
-    Optional<ImageFile> findById(Long id); //null 값 존재할 수 있으니 Optional 사용
 }

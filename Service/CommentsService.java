@@ -11,7 +11,6 @@ import org.springframework.stereotype.Service;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
 
-import static org.apache.commons.lang3.RandomStringUtils.random;
 
 @Service
 public class CommentsService {
@@ -41,7 +40,7 @@ public class CommentsService {
             Faker faker = new Faker(new Locale(language), new Random(seed));
             Comments comments = new Comments();
             comments.setCommentId(UUID.randomUUID().toString());
-            comments.setUserId(userService.getUserID());
+            comments.setUserId(userService.getUserID("random"));
             comments.setCreateAt(Long.valueOf(Long.toString(faker.date().past(365, TimeUnit.DAYS).getTime())));
             comments.setComment(faker.lorem().sentence());
 
@@ -50,18 +49,9 @@ public class CommentsService {
         }
     }
 
-    public List<Comments> returnTwoComments() {
-        List<Comments> allComments = commentsRepository.findAll(); //응응 ㅇㅇㅇ
+    public void uploadComment(String userId, String comment){
 
-        List<Comments> randomComments = new ArrayList<>();
-
-        Random random = new Random();
-
-        for (int i = 0; i < 2; i++) {
-            int commentIndex = random.nextInt(allComments.size());
-            randomComments.add(allComments.get(commentIndex));
-        }
-
-        return randomComments;
     }
+
+
 }

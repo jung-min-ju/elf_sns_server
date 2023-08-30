@@ -1,14 +1,13 @@
 package ToyProject.SNS.Controller;
 
 import ToyProject.SNS.DTO.ContentsRequest;
+import ToyProject.SNS.DTO.UploadDTO;
 import ToyProject.SNS.Entity.Comments;
 import ToyProject.SNS.Entity.Contents;
 import ToyProject.SNS.Entity.ContentsUser;
 import ToyProject.SNS.Entity.ImageFile;
-import ToyProject.SNS.Service.CommentsService;
-import ToyProject.SNS.Service.ContentsService;
-import ToyProject.SNS.Service.ImageFileService;
-import ToyProject.SNS.Service.PackingService;
+import ToyProject.SNS.Service.*;
+import org.apache.catalina.User;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -24,16 +23,19 @@ public class ContentsController {
     private CommentsService commentsService;
     private ImageFileService imageFileService;
     private PackingService packingService;
+    private UserService userService;
 
     public ContentsController(ContentsService contentsService,
                               CommentsService commentsService,
                               ImageFileService imageFileService,
-                              PackingService packingService )
+                              PackingService packingService,
+                              UserService userService)
     {
         this.contentsService = contentsService;
         this.commentsService = commentsService;
         this.imageFileService = imageFileService;
         this.packingService = packingService;
+        this.userService = userService;
     }
 
 
@@ -47,44 +49,29 @@ public class ContentsController {
         if (contentsRequest.getContentId()==null) {
             //데이터 생성
             imageFileService.findByImagesFiles(); //이미지 경로 저장
-            contentsService.createContents(seed, contentsRequest.getRequiredPage()); //컨텐츠 만들기
+            contentsService.createContents(seed, contentsRequest.getRequiredPage()); //컨텐츠 만들기 - crateAT순으로 정렬해줌
             commentsService.createComments(); // 댓글 만들기
+            userService.createFriendship(); //친구 관계 설정
 
-            contentsData = packingService.ContentsPage(contentsRequest.getRequiredPage());
+            contentsData = packingService.ContentsPage(String.valueOf(0L),contentsRequest.getRequiredPage(),"");
         }
         else{
-
+            if(contentsRequest.getRequiredPage()>0){
+                //contents id를 기준으로, 더 작은 id만큼의 requiredpage가 필요함
+                contentsData = packingService.ContentsPage(contentsRequest.getContentId(),contentsRequest.getRequiredPage(),"plus");
+            }
+            else{
+                 //contents id를 기준으로, 더 큰 id만큼의 requiredpage가 필요함
+                contentsData = packingService.ContentsPage(contentsRequest.getContentId(),contentsRequest.getRequiredPage(),"minus");
+            }
         }
         return ResponseEntity.status(HttpStatus.OK).body(contentsData);
     }
+
+    @PostMapping("/getFriendship")
+    ResponseEntity <Map<String, Object>> getFriendship(@RequestBody ContentsRequest contentsRequest) throws Exception{
+
+    }
+
 }
 
-
-// state: "SUCCESS",
-//         payload:{
-//         totalPage: totalPage,
-//         data: [{
-//         id: //콘텐츠 아이디 돌려주면 됨
-//         author: { //저자
-//         id: "userId_12312", //저자 아이디
-//         imgUrl: "../img/test_img/사람_1.jpg" //저자 프로필 사진
-//         },
-//         createAt: 1692706863808, //숫자로
-//         imgUrl: ["../img/test_img/사람_5.jpg"// 이미지 url
-//         content: "하루 죙일 버튜얼라이즈 인피니티로드를 만졌다., //내용
-//         comments: [{
-//         commentId:"commentId_123412",
-//         userId:"userId_123123",
-//         createAt:1698469752808,
-//         comment:"와 진짜 개공감 ㅇㅈ"
-//         },{
-//         commentId:"commentId_123412",
-//         userId:"userId_123123",
-//         createAt:1698469752808,
-//         comment:"와 진짜 개공감 ㅇㅈ"
-//         }] //댓글은 두개만 반환
-//         },
-//         {
-//         //위 데이터 형식으로 data 배열을 totalPage 만큼 만든 후, 각 인덱스에 해당 데이터 형식으로 다 넣어주면 됨
-//         }]
-//         }

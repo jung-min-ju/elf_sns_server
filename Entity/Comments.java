@@ -20,7 +20,7 @@ public class Comments {
     private String userId; //이건 contestUser에서 faker 돌린 값 넣어줄 것임. 즉 이 부분만 faker로 돌리는게 아니라 넣어줄 것.
     private Long createAt;
     private String comment;
-
+    private String imgUrl; //이거 imgurl에서 faker 돌린 값 넣어주면 됨
 }
 /*
 * comments: [{

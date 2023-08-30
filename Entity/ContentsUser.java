@@ -17,5 +17,7 @@ public class ContentsUser {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
 
     private Long id;
-    public String userID; //uuid 알아보고 적용해보기
+    private String userID; //uuid 알아보고 적용해보기
+    private String imgUrl;
+
 }
